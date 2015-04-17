@@ -1,5 +1,6 @@
 package edu.iis.mto.serverloadbalancer;
 
+import static edu.iis.mto.serverloadbalancer.ServerBuilder.server;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -16,12 +17,8 @@ public class ServerLoadBalancerTest {
 	@Test
 	public void balancingServer_noVm_ServersStaysEmpty() {
 		Server theServer = a(server().withCapacity(1));
-		balance(aListOfServersWith(theServer), anEmptyArrayOfVms());
+		balance(anArrayOfServersWith(theServer), anEmptyArrayOfVms());
 		assertThat(theServer, hasLoadPercentageOf(0.0d));
-	}
-
-	private Vm[] anEmptyArrayOfVms() {
-		return new Vm[] {};
 	}
 
 	private Server a(ServerBuilder builder) {
@@ -36,12 +33,12 @@ public class ServerLoadBalancerTest {
 		return new CurrentLoadPercentageMatcher(expectedPercentageLoad);
 	}
 
-	private Server[] aListOfServersWith(Server... server) {
-		return server;
+	private Server[] anArrayOfServersWith(Server... servers) {
+		return servers;
 	}
 
-	private ServerBuilder server() {
-		return new ServerBuilder();
+	private Vm[] anEmptyArrayOfVms() {
+		return new Vm[0];
 	}
 
 }
