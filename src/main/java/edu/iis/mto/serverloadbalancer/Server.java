@@ -6,13 +6,14 @@ import java.util.List;
 public class Server {
 
 	private List<Vm> runningVms = new ArrayList<Vm>();
+	private int capacity;
+
+	public Server(int capacity) {
+		this.capacity = capacity;
+	}
 
 	public double getCurrentLoadPercentage() {
-		if (runningVms.size() > 0) {
-			return 100;
-		}
-		else
-			return 0;
+		return runningVms.stream().mapToInt(vm -> vm.getSize()).sum() / (capacity*1d) * 100;
 	}
 
 	public void addVm(Vm vm) {
