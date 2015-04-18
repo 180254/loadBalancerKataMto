@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Server {
 
+	public static final double MAXIMUM_LOAD = 100d;
+	
 	private List<Vm> runningVms = new ArrayList<Vm>();
 	private int capacity;
 

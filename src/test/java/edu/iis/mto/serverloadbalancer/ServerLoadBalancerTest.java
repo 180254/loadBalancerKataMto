@@ -43,6 +43,7 @@ public class ServerLoadBalancerTest {
 	public void balancingOneServerWithTenSlotsCapacity_andOneSlotVm_fillTheServerWithTenPercent() {
 		Server theServer = a(server().withCapacity(10));
 		Vm theVm = a(vm().ofSize(1));
+		
 		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(10.0d));

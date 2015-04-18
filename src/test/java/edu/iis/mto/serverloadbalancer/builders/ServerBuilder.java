@@ -10,6 +10,7 @@ public class ServerBuilder implements Builder<Server> {
 
 	public ServerBuilder() {
 		withCapacity(1);
+		withCurrentLoadOf(0d);
 	}
 
 	public ServerBuilder withCapacity(int capacity) {
@@ -17,22 +18,26 @@ public class ServerBuilder implements Builder<Server> {
 		return this;
 	}
 
-	public Server build() {
-		Server server = new Server(capacity);
-		if (initialLoad > 0) {
-			Vm vm = new VmBuilder().ofSize((int) (initialLoad / 100.0d * (double) capacity)).build();
-			server.addVm(vm);
-		}
-		return server;
-	}
-
-	public static ServerBuilder server() {
-		return new ServerBuilder();
-	}
-
 	public ServerBuilder withCurrentLoadOf(double initialLoad) {
 		this.initialLoad = initialLoad;
 		return this;
 	}
 
+	public Server build() {
+		Server server = new Server(capacity);
+		addInitialLoad(server);
+		return server;
+	}
+
+	private void addInitialLoad(Server server) {
+		if (initialLoad > 0) {
+			int initialLoadVmSize = (int) (initialLoad / Server.MAXIMUM_LOAD * capacity);
+			Vm initialLoadVm = new VmBuilder().ofSize(initialLoadVmSize).build();
+			server.addVm(initialLoadVm);
+		}
+	}
+
+	public static ServerBuilder server() {
+		return new ServerBuilder();
+	}
 }
