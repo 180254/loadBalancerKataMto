@@ -8,7 +8,7 @@ import edu.iis.mto.serverloadbalancer.Server;
 public class CurrentLoadPercentageMatcher extends TypeSafeMatcher<Server> {
 
 	private static final String DESCRIPTION_STRING = "a server with load percentage of ";
-	private static final double EQUALS_EPSILON = 1e-5d;
+	private static final double EQUALS_EPSILON = 1e-2d;
 
 	double expectedLoadPercentage;
 
