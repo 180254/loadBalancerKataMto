@@ -3,20 +3,20 @@ package edu.iis.mto.serverloadbalancer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.Matcher;
-
 public class Server {
-public	List<Vm> vms = new ArrayList<Vm>();
-	
-	private double currentPercentageLoad = 0;
-	
-	public double getCurrentPercentageLoad() {
-		if(vms.size() >0) {
-			currentPercentageLoad = 100;
+
+	private List<Vm> runningVms = new ArrayList<Vm>();
+
+	public double getCurrentLoadPercentage() {
+		if (runningVms.size() > 0) {
+			return 100;
 		}
-		else currentPercentageLoad = 0;
-		
-		return currentPercentageLoad;
+		else
+			return 0;
+	}
+
+	public void addVm(Vm vm) {
+		runningVms.add(vm);
 	}
 
 	public boolean contains(Vm vm) {

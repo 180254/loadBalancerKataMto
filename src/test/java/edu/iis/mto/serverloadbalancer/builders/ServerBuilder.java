@@ -1,6 +1,8 @@
-package edu.iis.mto.serverloadbalancer;
+package edu.iis.mto.serverloadbalancer.builders;
 
-public class ServerBuilder {
+import edu.iis.mto.serverloadbalancer.Server;
+
+public class ServerBuilder implements Builder<Server> {
 	int capacity;
 
 	public ServerBuilder() {
