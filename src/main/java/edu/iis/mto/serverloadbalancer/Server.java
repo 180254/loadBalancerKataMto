@@ -26,7 +26,11 @@ public class Server {
 	}
 
 	public boolean contains(Vm vm) {
-		return true;
+		return runningVms.contains(vm);
+	}
+
+	public int getVmsCount() {
+		return runningVms.size();
 	}
 
 }

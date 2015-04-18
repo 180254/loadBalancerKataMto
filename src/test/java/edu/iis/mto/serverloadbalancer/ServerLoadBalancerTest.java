@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import edu.iis.mto.serverloadbalancer.builders.Builder;
 import edu.iis.mto.serverloadbalancer.matchers.CurrentLoadPercentageMatcher;
+import edu.iis.mto.serverloadbalancer.matchers.ServerVmsCountMatcher;
 
 public class ServerLoadBalancerTest {
 
@@ -53,11 +54,16 @@ public class ServerLoadBalancerTest {
 		Server theServer = a(server().withCapacity(100));
 		Vm theFirstVm = a(vm().ofSize(1));
 		Vm theSecondVm = a(vm().ofSize(1));
+
 		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theFirstVm, theSecondVm));
 
 		assertThat(theServer, hasVmsCountOf(2));
 		assertThat("the server contain vms", theServer.contains(theFirstVm));
 		assertThat("the server contain vms", theServer.contains(theSecondVm));
+	}
+
+	private Matcher<? super Server> hasVmsCountOf(int vmsCount) {
+		return new ServerVmsCountMatcher(vmsCount);
 	}
 
 	private <T> T a(Builder<T> builder) {
