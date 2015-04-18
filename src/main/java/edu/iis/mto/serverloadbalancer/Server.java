@@ -6,7 +6,7 @@ import java.util.List;
 public class Server {
 
 	public static final double MAXIMUM_LOAD = 100d;
-	
+
 	private List<Vm> runningVms = new ArrayList<Vm>();
 	private int capacity;
 
@@ -29,6 +29,10 @@ public class Server {
 
 	public boolean contains(final Vm vm) {
 		return runningVms.contains(vm);
+	}
+
+	public int getVmsCapacity() {
+		return capacity;
 	}
 
 	public int getVmsCount() {
