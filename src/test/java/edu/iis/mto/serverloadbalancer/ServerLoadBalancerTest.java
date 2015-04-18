@@ -72,4 +72,5 @@ public class ServerLoadBalancerTest {
 	private Matcher<? super Server> hasLoadPercentageOf(double expectedPercentageLoad) {
 		return new CurrentLoadPercentageMatcher(expectedPercentageLoad);
 	}
+	
 }

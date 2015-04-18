@@ -13,7 +13,12 @@ public class Server {
 	}
 
 	public double getCurrentLoadPercentage() {
-		return runningVms.stream().mapToInt(vm -> vm.getSize()).sum() / (capacity*1d) * 100;
+		final int TO_PERCENTAGE_MULTIPLIER = 100;
+
+		int runningVmsSizeSum = runningVms.stream().mapToInt(vm -> vm.getSize()).sum();
+		double serverLoad = runningVmsSizeSum / (double) capacity;
+
+		return serverLoad * TO_PERCENTAGE_MULTIPLIER;
 	}
 
 	public void addVm(Vm vm) {
