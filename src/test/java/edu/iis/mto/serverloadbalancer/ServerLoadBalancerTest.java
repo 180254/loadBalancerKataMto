@@ -58,12 +58,8 @@ public class ServerLoadBalancerTest {
 		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theFirstVm, theSecondVm));
 
 		assertThat(theServer, hasVmsCountOf(2));
-		assertThat("the server contain vms", theServer.contains(theFirstVm));
-		assertThat("the server contain vms", theServer.contains(theSecondVm));
-	}
-
-	private Matcher<? super Server> hasVmsCountOf(int vmsCount) {
-		return new ServerVmsCountMatcher(vmsCount);
+		assertThat("the server contains vms", theServer.contains(theFirstVm));
+		assertThat("the server contains vms", theServer.contains(theSecondVm));
 	}
 
 	private <T> T a(Builder<T> builder) {
@@ -89,5 +85,8 @@ public class ServerLoadBalancerTest {
 	private Matcher<? super Server> hasLoadPercentageOf(double expectedPercentageLoad) {
 		return new CurrentLoadPercentageMatcher(expectedPercentageLoad);
 	}
-
+	
+	private Matcher<? super Server> hasVmsCountOf(int vmsCount) {
+		return new ServerVmsCountMatcher(vmsCount);
+	}
 }

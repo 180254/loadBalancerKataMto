@@ -3,7 +3,7 @@ package edu.iis.mto.serverloadbalancer.builders;
 import edu.iis.mto.serverloadbalancer.Server;
 
 public class ServerBuilder implements Builder<Server> {
-	
+
 	int capacity;
 
 	public ServerBuilder() {
@@ -22,5 +22,5 @@ public class ServerBuilder implements Builder<Server> {
 	public static ServerBuilder server() {
 		return new ServerBuilder();
 	}
-	
+
 }

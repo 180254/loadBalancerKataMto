@@ -21,11 +21,11 @@ public class Server {
 		return serverLoad * TO_PERCENTAGE_MULTIPLIER;
 	}
 
-	public void addVm(Vm vm) {
+	public void addVm(final Vm vm) {
 		runningVms.add(vm);
 	}
 
-	public boolean contains(Vm vm) {
+	public boolean contains(final Vm vm) {
 		return runningVms.contains(vm);
 	}
 
