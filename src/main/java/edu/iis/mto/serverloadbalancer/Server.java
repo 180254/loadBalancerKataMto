@@ -21,7 +21,7 @@ public class Server {
 	}
 
 	public void addVm(final Vm vm) {
-		currentLoadPercentage += vmCostAsLoad(vm);
+		currentLoadPercentage += vmToServerLoad(vm);
 		runningVms.add(vm);
 	}
 
@@ -34,10 +34,10 @@ public class Server {
 	}
 
 	public boolean catFit(final Vm vm) {
-		return (getCurrentLoadPercentage() + vmCostAsLoad(vm)) <= MAXIMUM_LOAD;
+		return (getCurrentLoadPercentage() + vmToServerLoad(vm)) <= MAXIMUM_LOAD;
 	}
 
-	private double vmCostAsLoad(final Vm vm) {
+	private double vmToServerLoad(final Vm vm) {
 		return vm.getSize() / (double) capacity * TO_PERCENTAGE_MULTIPLIER;
 	}
 }

@@ -21,22 +21,20 @@ public class ServerLoadBalancerTest {
 
 	@Test
 	public void balancingServer_noVm_ServersStaysEmpty() {
-		Server theServer = a(server().withCapacity(1));
-
-		balance(anArrayOfServersWith(theServer), anEmptyArrayOfVms());
-
-		assertThat(theServer, hasLoadPercentageOf(0.0d));
+		Server server = a(server().withCapacity(1));
+		balance(servers(server), noVms());
+		assertThat(server, hasLoadPercentageOf(0.0d));
 	}
 
 	@Test
 	public void balancingOneServerWithOneSlotCapacity_andOneSlotVm_fillsTheServerWithTheVm() {
-		Server theServer = a(server().withCapacity(1));
-		Vm theVm = a(vm().ofSize(1));
+		Server server = a(server().withCapacity(1));
+		Vm vm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
+		balance(servers(server), vms(vm));
 
-		assertThat(theServer, hasLoadPercentageOf(100.0d));
-		assertThat("the server contains vm", theServer.contains(theVm));
+		assertThat(server, hasLoadPercentageOf(100.0d));
+		assertThat("the server contains vm", server.contains(vm));
 	}
 
 	@Test
@@ -44,7 +42,7 @@ public class ServerLoadBalancerTest {
 		Server theServer = a(server().withCapacity(10));
 		Vm theVm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
+		balance(servers(theServer), vms(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(10.0d));
 		assertThat("the server contains vm", theServer.contains(theVm));
@@ -52,69 +50,69 @@ public class ServerLoadBalancerTest {
 
 	@Test
 	public void balancingAServerWithEnoughRoom_getsFilledWithAllVms() {
-		Server theServer = a(server().withCapacity(100));
-		Vm theFirstVm = a(vm().ofSize(1));
-		Vm theSecondVm = a(vm().ofSize(1));
+		Server server = a(server().withCapacity(100));
+		Vm firstVm = a(vm().ofSize(1));
+		Vm secondVm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theFirstVm, theSecondVm));
+		balance(servers(server), vms(firstVm, secondVm));
 
-		assertThat(theServer, hasVmsCountOf(2));
-		assertThat("the server contains vms", theServer.contains(theFirstVm));
-		assertThat("the server contains vms", theServer.contains(theSecondVm));
+		assertThat(server, hasVmsCountOf(2));
+		assertThat("the server contains vm", server.contains(firstVm));
+		assertThat("the server contains vm", server.contains(secondVm));
 	}
 
 	@Test
 	public void aVm_shouldBeBalanced_onLessLoadedServerFirst() {
 		Server lessLoadedServer = a(server().withCapacity(100).withCurrentLoadOf(45.0d));
 		Server moreLoadedServer = a(server().withCapacity(100).withCurrentLoadOf(50.0d));
-		Vm theVm = a(vm().ofSize(10));
+		Vm vm = a(vm().ofSize(10));
 
-		balance(anArrayOfServersWith(moreLoadedServer, lessLoadedServer), anArrayOfVmsWith(theVm));
+		balance(servers(moreLoadedServer, lessLoadedServer), vms(vm));
 
-		assertThat("the less loaded server contains vm", lessLoadedServer.contains(theVm));
+		assertThat("the less loaded server contains vm", lessLoadedServer.contains(vm));
 	}
 
 	@Test
 	public void balanceAServerWithNotEnoughRoom_shouldNotBeFilledWithAVm() {
-		Server theServer = a(server().withCapacity(10).withCurrentLoadOf(90.0d));
-		Vm theVm = a(vm().ofSize(2));
+		Server server = a(server().withCapacity(10).withCurrentLoadOf(90.0d));
+		Vm vm = a(vm().ofSize(2));
 
-		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
+		balance(servers(server), vms(vm));
 
-		assertThat("the less loaded server should not contain vm", !theServer.contains(theVm));
+		assertThat("the less loaded server doesn't contain vm", !server.contains(vm));
 	}
 
 	@Test
 	public void balance_serversAndVms() {
-		Server server1 = a(server().withCapacity(4));
-		Server server2 = a(server().withCapacity(6));
+		Server serverNo1 = a(server().withCapacity(4));
+		Server serverNo2 = a(server().withCapacity(6));
 
-		Vm vm1 = a(vm().ofSize(1));
-		Vm vm2 = a(vm().ofSize(4));
-		Vm vm3 = a(vm().ofSize(2));
+		Vm vmNo1 = a(vm().ofSize(1));
+		Vm vmNo2 = a(vm().ofSize(4));
+		Vm vmNo3 = a(vm().ofSize(2));
 
-		balance(anArrayOfServersWith(server1, server2), anArrayOfVmsWith(vm1, vm2, vm3));
+		balance(servers(serverNo1, serverNo2), vms(vmNo1, vmNo2, vmNo3));
 
-		assertThat("The server 1 contains the vm 1", server1.contains(vm1));
-		assertThat("The server 2 contains the vm 2", server2.contains(vm2));
-		assertThat("The server 1 contains the vm 3", server1.contains(vm3));
-		assertThat(server1, hasLoadPercentageOf(75.0d));
-		assertThat(server2, hasLoadPercentageOf(66.66d));
+		assertThat("The server 1 contains the vm 1", serverNo1.contains(vmNo1));
+		assertThat("The server 2 contains the vm 2", serverNo2.contains(vmNo2));
+		assertThat("The server 1 contains the vm 3", serverNo1.contains(vmNo3));
+		assertThat(serverNo1, hasLoadPercentageOf(75.0d));
+		assertThat(serverNo2, hasLoadPercentageOf(66.66d));
 	}
 
 	private <T> T a(Builder<T> builder) {
 		return builder.build();
 	}
 
-	private Server[] anArrayOfServersWith(Server... servers) {
+	private Server[] servers(Server... servers) {
 		return servers;
 	}
 
-	private Vm[] anEmptyArrayOfVms() {
+	private Vm[] noVms() {
 		return new Vm[0];
 	}
 
-	private Vm[] anArrayOfVmsWith(Vm... vms) {
+	private Vm[] vms(Vm... vms) {
 		return vms;
 	}
 
