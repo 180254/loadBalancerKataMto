@@ -6,22 +6,24 @@ import java.util.List;
 public class ServerLoadBalancer {
 
 	public void balance(final Server[] servers, final Vm[] vms) {
-
 		for (Vm vm : vms) {
-			List<Server> serversWithEnoughCapacity = new ArrayList<Server>(servers.length);
-			for (Server server : servers) {
-				if (server.getCurrentLoadPercentage() + vm.getSize()/(double)server.getVmsCapacity()*100 <= Server.MAXIMUM_LOAD) {
-					serversWithEnoughCapacity.add(server);
-				}
-			}
-			Server lessLoaded = extractLessLoaderServer(serversWithEnoughCapacity
-					.toArray(new Server[serversWithEnoughCapacity.size()]));
-			if (lessLoaded != null)
-				lessLoaded.addVm(vm);
+			addToCapableLessLoadedServer(servers, vm);
 		}
 	}
 
-	private Server extractLessLoaderServer(final Server[] servers) {
+	private List<Server> findServersWithEnoughCapacity(final Server[] servers, Vm vm) {
+		List<Server> serversWithEnoughCapacity = new ArrayList<Server>(servers.length);
+
+		for (Server server : servers) {
+			if (server.catFit(vm)) {
+				serversWithEnoughCapacity.add(server);
+			}
+		}
+
+		return serversWithEnoughCapacity;
+	}
+
+	private Server extractLessLoaderServer(final List<Server> servers) {
 		Server lessLoaded = null;
 
 		for (Server server : servers) {
@@ -32,6 +34,15 @@ public class ServerLoadBalancer {
 		}
 
 		return lessLoaded;
+	}
+
+	private void addToCapableLessLoadedServer(final Server[] servers, Vm vm) {
+		List<Server> capableServers = findServersWithEnoughCapacity(servers, vm);
+		Server capableLessLoadedServer = extractLessLoaderServer(capableServers);
+
+		if (capableLessLoadedServer != null) {
+			capableLessLoadedServer.addVm(vm);
+		}
 	}
 
 }

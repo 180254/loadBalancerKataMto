@@ -40,4 +40,5 @@ public class ServerBuilder implements Builder<Server> {
 	public static ServerBuilder server() {
 		return new ServerBuilder();
 	}
+
 }

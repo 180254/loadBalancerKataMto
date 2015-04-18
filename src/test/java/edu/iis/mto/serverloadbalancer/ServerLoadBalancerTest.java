@@ -33,7 +33,7 @@ public class ServerLoadBalancerTest {
 		Server theServer = a(server().withCapacity(1));
 		Vm theVm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theVm));
+		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(100.0d));
 		assertThat("the server contains vm", theServer.contains(theVm));
@@ -44,7 +44,7 @@ public class ServerLoadBalancerTest {
 		Server theServer = a(server().withCapacity(10));
 		Vm theVm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theVm));
+		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(10.0d));
 		assertThat("the server contains vm", theServer.contains(theVm));
@@ -56,7 +56,7 @@ public class ServerLoadBalancerTest {
 		Vm theFirstVm = a(vm().ofSize(1));
 		Vm theSecondVm = a(vm().ofSize(1));
 
-		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theFirstVm, theSecondVm));
+		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theFirstVm, theSecondVm));
 
 		assertThat(theServer, hasVmsCountOf(2));
 		assertThat("the server contains vms", theServer.contains(theFirstVm));
@@ -69,7 +69,7 @@ public class ServerLoadBalancerTest {
 		Server moreLoadedServer = a(server().withCapacity(100).withCurrentLoadOf(50.0d));
 		Vm theVm = a(vm().ofSize(10));
 
-		balance(anArrayOfServersWith(moreLoadedServer, lessLoadedServer), aArrayOfVmsWith(theVm));
+		balance(anArrayOfServersWith(moreLoadedServer, lessLoadedServer), anArrayOfVmsWith(theVm));
 
 		assertThat("the less loaded server contains vm", lessLoadedServer.contains(theVm));
 	}
@@ -79,7 +79,7 @@ public class ServerLoadBalancerTest {
 		Server theServer = a(server().withCapacity(10).withCurrentLoadOf(90.0d));
 		Vm theVm = a(vm().ofSize(2));
 
-		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theVm));
+		balance(anArrayOfServersWith(theServer), anArrayOfVmsWith(theVm));
 
 		assertThat("the less loaded server should not contain vm", !theServer.contains(theVm));
 	}
@@ -96,7 +96,7 @@ public class ServerLoadBalancerTest {
 		return new Vm[0];
 	}
 
-	private Vm[] aArrayOfVmsWith(Vm... vms) {
+	private Vm[] anArrayOfVmsWith(Vm... vms) {
 		return vms;
 	}
 
