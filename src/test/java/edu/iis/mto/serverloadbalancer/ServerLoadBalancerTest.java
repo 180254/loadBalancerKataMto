@@ -37,16 +37,27 @@ public class ServerLoadBalancerTest {
 		assertThat(theServer, hasLoadPercentageOf(100.0d));
 		assertThat("the server contains vm", theServer.contains(theVm));
 	}
-	
-	@Test 
-	public void balancingOneServerWithTenSlotsCapacity_andOneSlotVm_fillTheServerWithTenPercent(){
+
+	@Test
+	public void balancingOneServerWithTenSlotsCapacity_andOneSlotVm_fillTheServerWithTenPercent() {
 		Server theServer = a(server().withCapacity(10));
 		Vm theVm = a(vm().ofSize(1));
 		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(10.0d));
-		assertThat("the server should contain vm", theServer.contains(theVm));
-		
+		assertThat("the server contains vm", theServer.contains(theVm));
+	}
+
+	@Test
+	public void balancingAServerWithEnoughRoom_getsFilledWithAllVms() {
+		Server theServer = a(server().withCapacity(100));
+		Vm theFirstVm = a(vm().ofSize(1));
+		Vm theSecondVm = a(vm().ofSize(1));
+		balance(anArrayOfServersWith(theServer), aArrayOfVmsWith(theFirstVm, theSecondVm));
+
+		assertThat(theServer, hasVmsCountOf(2));
+		assertThat("the server contain vms", theServer.contains(theFirstVm));
+		assertThat("the server contain vms", theServer.contains(theSecondVm));
 	}
 
 	private <T> T a(Builder<T> builder) {
@@ -72,5 +83,5 @@ public class ServerLoadBalancerTest {
 	private Matcher<? super Server> hasLoadPercentageOf(double expectedPercentageLoad) {
 		return new CurrentLoadPercentageMatcher(expectedPercentageLoad);
 	}
-	
+
 }
