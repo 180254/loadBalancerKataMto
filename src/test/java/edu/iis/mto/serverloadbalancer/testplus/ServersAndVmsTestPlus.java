@@ -1,6 +1,6 @@
 package edu.iis.mto.serverloadbalancer.testplus;
 
-import static edu.iis.mto.serverloadbalancer.testplus.BalanaceAssertion.balanceassertion;
+import static edu.iis.mto.serverloadbalancer.testplus.BalanceAssertionBuilder.balanceassertion;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
@@ -25,19 +25,21 @@ public class ServersAndVmsTestPlus extends ServerLoadBalancerBaseTest {
 						.withServersCapacities(4, 6)
 						.withVmsSizes(1, 4, 2)
 						.withBalancedAssertions(
-								balanceassertion().vm(1).onserver(1),
-								balanceassertion().vm(2).onserver(2),
-								balanceassertion().vm(3).onserver(1))
+								// example balance assertion notation no 1
+								a(balanceassertion().serverNo(1).containsVmNo(1)),
+								a(balanceassertion().serverNo(1).containsVmNo(3)),
+								a(balanceassertion().serverNo(2).containsVmNo(2)))
 						.withServersLoads(75d, 66.66d)
 		}, {
 				new TestParameter()
 						.withServersCapacities(3, 3, 6)
 						.withVmsSizes(1, 4, 2, 2)
 						.withBalancedAssertions(
-								balanceassertion().vm(1).onserver(1),
-								balanceassertion().vm(2).onserver(3),
-								balanceassertion().vm(3).onserver(2),
-								balanceassertion().vm(4).onserver(1))
+								// example balance assertion notation no 2
+								a(balanceassertion().vmNo(1).isOnServerNo(1)),
+								a(balanceassertion().vmNo(2).isOnServerNo(3)),
+								a(balanceassertion().vmNo(3).isOnServerNo(2)),
+								a(balanceassertion().vmNo(4).isOnServerNo(1)))
 						.withServersLoads(100d, 66.66d, 66.66d)
 		} });
 	}

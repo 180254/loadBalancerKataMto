@@ -11,7 +11,7 @@ public class ServerLoadBalancerBaseTest {
 		return servers;
 	}
 
-	<T> T a(Builder<T> builder) {
+	protected static <T> T a(Builder<T> builder) {
 		return builder.build();
 	}
 

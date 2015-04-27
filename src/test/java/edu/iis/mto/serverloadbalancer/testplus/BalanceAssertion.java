@@ -31,29 +31,4 @@ class BalanaceAssertion {
 		this.vmNo = vmNo;
 		this.serverNo = serverNo;
 	}
-
-	public BalanaceAssertion vm(int vmNo) {
-		this.vmNo = vmNo;
-		return this;
-	}
-
-	public BalanaceAssertion onserver(int serverNo) {
-		this.serverNo = serverNo;
-		return this;
-	}
-
-	public BalanaceAssertion server(int serverNo) {
-		this.serverNo = serverNo;
-		return this;
-	}
-
-	public BalanaceAssertion hasvm(int vmNo) {
-		this.vmNo = vmNo;
-		return this;
-	}
-
-	public static BalanaceAssertion balanceassertion() {
-		return new BalanaceAssertion();
-	}
-
 }
