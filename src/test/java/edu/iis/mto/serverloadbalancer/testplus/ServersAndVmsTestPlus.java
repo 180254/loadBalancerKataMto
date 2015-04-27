@@ -1,5 +1,6 @@
 package edu.iis.mto.serverloadbalancer.testplus;
 
+import static edu.iis.mto.serverloadbalancer.testplus.BalanaceAssertion.balanceassertion;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
@@ -24,19 +25,19 @@ public class ServersAndVmsTestPlus extends ServerLoadBalancerBaseTest {
 						.withServersCapacities(4, 6)
 						.withVmsSizes(1, 4, 2)
 						.withBalancedAssertions(
-								new BalanaceAssertion(1, 1),
-								new BalanaceAssertion(2, 2),
-								new BalanaceAssertion(3, 1))
+								balanceassertion().vm(1).onserver(1),
+								balanceassertion().vm(2).onserver(2),
+								balanceassertion().vm(3).onserver(1))
 						.withServersLoads(75d, 66.66d)
 		}, {
 				new TestParameter()
 						.withServersCapacities(3, 3, 6)
 						.withVmsSizes(1, 4, 2, 2)
 						.withBalancedAssertions(
-								new BalanaceAssertion(1, 1),
-								new BalanaceAssertion(2, 3),
-								new BalanaceAssertion(3, 2),
-								new BalanaceAssertion(4, 1))
+								balanceassertion().vm(1).onserver(1),
+								balanceassertion().vm(2).onserver(3),
+								balanceassertion().vm(3).onserver(2),
+								balanceassertion().vm(4).onserver(1))
 						.withServersLoads(100d, 66.66d, 66.66d)
 		} });
 	}
