@@ -9,16 +9,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 class TestParameter {
+
 	int[] serversCapacities;
 	int[] vmsSizes;
-	int[][] balancedAssertions;
+	BalanaceAssertion[] balanceAssertions;
 	double[] serversLoads;
 
 	public TestParameter withServersCapacities(int... serversCapacities) {
@@ -31,14 +31,46 @@ class TestParameter {
 		return this;
 	}
 
-	public TestParameter withBalancedAssertions(int[][] balancedAssertions) {
-		this.balancedAssertions = balancedAssertions;
+	public TestParameter withBalancedAssertions(BalanaceAssertion... balanceAssertions) {
+		this.balanceAssertions = balanceAssertions;
 		return this;
 	}
 
 	public TestParameter withServersLoads(double... serverLoads) {
 		this.serversLoads = serverLoads;
 		return this;
+	}
+
+	public Server[] servers() {
+		List<Server> servers = new ArrayList<Server>(serversCapacities.length);
+
+		for (int capacity : serversCapacities) {
+			servers.add(server().withCapacity(capacity).build());
+		}
+
+		return servers.toArray(new Server[servers.size()]);
+	}
+
+	public Vm[] vms() {
+		List<Vm> vms = new ArrayList<Vm>(vmsSizes.length);
+
+		for (int vmSize : vmsSizes) {
+			vms.add(vm().ofSize(vmSize).build());
+		}
+
+		return vms.toArray(new Vm[vms.size()]);
+	}
+}
+
+class BalanaceAssertion {
+
+	int serverNo;
+	int vmNo;
+
+	public BalanaceAssertion(int serverNo, int vmNo) {
+		super();
+		this.serverNo = serverNo;
+		this.vmNo = vmNo;
 	}
 }
 
@@ -52,11 +84,9 @@ public class ServerLoadBalancerParametrizedTestPlus extends ServerLoadBalancerBa
 						.withServersCapacities(4, 6)
 						.withVmsSizes(1, 4, 2)
 						.withBalancedAssertions(
-								new int[][] {
-								{ 1, 1 },
-								{ 2, 2 },
-								{ 1, 3 }
-								})
+								new BalanaceAssertion(1, 1),
+								new BalanaceAssertion(2, 2),
+								new BalanaceAssertion(1, 3))
 						.withServersLoads(75d, 66.66d)
 		} });
 	}
@@ -70,47 +100,25 @@ public class ServerLoadBalancerParametrizedTestPlus extends ServerLoadBalancerBa
 
 	@Test
 	public void balance_serversAndVms() {
-		Server[] servers = servers();
-		Vm[] vms = vms();
+		Server[] servers = param.servers();
+		Vm[] vms = param.vms();
 
 		balance(servers, vms);
 
-		for (int assetionNo = 0; assetionNo < param.balancedAssertions.length; assetionNo++) {
-			int serverNo = param.balancedAssertions[assetionNo][0] - 1;
-			int vmNo = param.balancedAssertions[assetionNo][1] - 1;
+		for (int assetionNo = 0; assetionNo < param.balanceAssertions.length; assetionNo++) {
+			int serverNo = param.balanceAssertions[assetionNo].serverNo - 1;
+			int vmNo = param.balanceAssertions[assetionNo].vmNo - 1;
 
 			assertThat("The server " + (serverNo + 1) + " contains the vm " + (vmNo + 1),
 					servers[serverNo].contains(vms[vmNo]));
 		}
 
 		for (int serverNo = 0; serverNo < param.serversLoads.length; serverNo++) {
-			 double serverLoad = param.serversLoads[serverNo];
-			 assertThat(servers[serverNo], hasLoadPercentageOf(serverLoad));
+			double serverLoad = param.serversLoads[serverNo];
+
+			assertThat(servers[serverNo], hasLoadPercentageOf(serverLoad));
 		}
 
 	}
 
-	private Server[] servers() {
-		List<Server> servers = new ArrayList<Server>(param.serversCapacities.length);
-
-		for (int capacity : param.serversCapacities) {
-			servers.add(a(server().withCapacity(capacity)));
-		}
-
-		return servers.toArray(new Server[servers.size()]);
-	}
-
-	private Vm[] vms() {
-		List<Vm> vms = new ArrayList<Vm>(param.vmsSizes.length);
-
-		for (int vmSize : param.vmsSizes) {
-			vms.add(a(vm().ofSize(vmSize)));
-		}
-
-		return vms.toArray(new Vm[vms.size()]);
-	}
-
-	private Matcher<? super Server> hasLoadPercentageOf(double expectedPercentageLoad) {
-		return new CurrentLoadPercentageMatcher(expectedPercentageLoad);
-	}
 }
