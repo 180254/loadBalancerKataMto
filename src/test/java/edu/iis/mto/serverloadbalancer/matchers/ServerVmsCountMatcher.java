@@ -15,7 +15,6 @@ public class ServerVmsCountMatcher extends TypeSafeMatcher<Server> {
 		this.expectedVmsCount = expectedVmsCount;
 	}
 
-	@Override
 	public void describeTo(final Description description) {
 		description.appendText(DESCRIPTION_STRING)
 				.appendValue(expectedVmsCount);
